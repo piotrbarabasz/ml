@@ -1,0 +1,103 @@
+import csv
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris, load_breast_cancer
+from sklearn.model_selection import RepeatedStratifiedKFold
+from sklearn.metrics import accuracy_score, balanced_accuracy_score
+from sklearn.base import clone
+
+from random_classifier import RandomClassifier
+from sklearn.neighbors import KNeighborsClassifier
+
+from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import TomekLinks
+
+smote = SMOTE(random_state=42)
+tomek_links = TomekLinks()
+
+rskf = RepeatedStratifiedKFold(n_repeats=5, n_splits=2, random_state=100)
+
+csv_file = 'glass.csv'
+
+data = []
+target = []
+
+with open(csv_file, 'r') as file:
+    reader = csv.reader(file)
+    next(reader)
+
+    for row in reader:
+        data_row = [float(value) for value in row[:9]]
+        target_value = int(row[9].strip())
+
+        data.append(data_row)
+        np_data = np.array(data)
+
+        target.append(target_value)
+        np_target = np.array(target)
+
+dataset_tuple = (np_data, np_target)
+
+DATASETS = [
+    # load_breast_cancer(return_X_y=True),
+    load_iris(return_X_y=True),
+    dataset_tuple
+]
+
+# print('load_breast_cancer', load_breast_cancer)
+# print('load_iris', load_iris)
+# print('dataset_tuple', dataset_tuple)
+
+# x, y = load_iris(return_X_y=True);
+# print('x', x)
+# print('y', y)
+# exit()
+
+CLASSIFIERS = [
+    KNeighborsClassifier(n_neighbors=3),
+    KNeighborsClassifier(n_neighbors=15),
+    RandomClassifier(random_state=1000)
+]
+scores = np.zeros(shape=(len(DATASETS), len(CLASSIFIERS), rskf.get_n_splits()))
+# print(scores.shape)
+# exit()
+
+for dataset_idx, (X, y) in enumerate(DATASETS):
+    for classifier_idx, clf_prot in enumerate(CLASSIFIERS):
+        for fold_idx, (train, test) in enumerate(rskf.split(X, y)):
+            clf = clone(clf_prot)
+            clf.fit(X[train], y[train])
+            y_pred = clf.predict(X[test])
+            score = accuracy_score(y[test], y_pred)
+            scores[dataset_idx, classifier_idx, fold_idx] = score
+
+            # #TOMEK-links
+            # X, y = tomek_links.fit_resample(X_smote, y_smote)
+
+        X_smote, y_smote = smote.fit_resample(X, y)
+
+        for fold_idx, (train, test) in enumerate(rskf.split(X_smote, y_smote)):
+            # print(len(X_smote), len(y_smote))
+            clf = clone(clf_prot)
+            clf.fit(X_smote[train], y_smote[train])
+            y_smote_pred = clf.predict(X_smote[test])
+            score_smote = accuracy_score(y_smote[test], y_smote_pred)
+            scores[dataset_idx, classifier_idx, fold_idx] = score_smote
+
+# print("Original dataset:")
+# # print(X)
+# print(y)
+# print("Resampled dataset:")
+# # print(X_resampled)
+# print(y_resampled)
+
+plt.figure(figsize=(7.50, 3.50))
+plt.title("Imbalanced dataset", fontsize="12")
+plt.scatter(X[:, 0], X[:, 1], marker="o", c=y, s=40, edgecolor="k")
+
+# plt.figure(figsize=(7.50, 3.50))
+# plt.title("Oversampled by SMOTE", fontsize="12")
+# plt.scatter(X_resampled[:, 0], X_resampled[:, 1], marker="o", c=y_resampled, s=40, edgecolor="k")
+plt.show()
+
+np.save("scores", scores)
