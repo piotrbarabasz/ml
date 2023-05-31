@@ -10,7 +10,7 @@ table = tabulate(np.mean(scores, axis=-1),
                  headers=[
                      "KNN 3", "KNN 15", "RC",
                      "SM TL KNN3", "TL SM KNN3",
-                     "SM KNN 3", "TL KNN3"
+                     "SM KNN 3", "TL KNN 3"
                  ],
                  showindex=[
                      "glass", "wisconsin", "ecoli-0_vs_1",
