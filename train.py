@@ -59,8 +59,8 @@ smote_tomek_knn3_ppl = Pipeline([
 ])
 
 tomek_smote_knn3_ppl = Pipeline([
-    ('smote', SMOTE(sampling_strategy='auto')),
     ('tomek', TomekLinks()),
+    ('smote', SMOTE(sampling_strategy='auto')),
     ('classification', KNeighborsClassifier(n_neighbors=3))
 ])
 
