@@ -16,7 +16,7 @@ from imblearn.pipeline import Pipeline
 smote = SMOTE(random_state=42)
 tomek_links = TomekLinks()
 
-rskf = RepeatedStratifiedKFold(n_repeats=5, n_splits=2, random_state=100)
+rskf = RepeatedStratifiedKFold(n_repeats=5, n_splits=2, random_state=1410)
 
 # datasets from http://keel.es/
 PATH_DATASET = [
@@ -72,15 +72,39 @@ tomek_knn3_ppl = Pipeline([
     ('tomek', TomekLinks()),
     ('classification', KNeighborsClassifier(n_neighbors=3))
 ])
+smote_tomek_knn15_ppl = Pipeline([
+    ('smote', SMOTE(sampling_strategy='auto')),
+    ('tomek', TomekLinks()),
+    ('classification', KNeighborsClassifier(n_neighbors=15))
+])
+
+tomek_smote_knn15_ppl = Pipeline([
+    ('tomek', TomekLinks()),
+    ('smote', SMOTE(sampling_strategy='auto')),
+    ('classification', KNeighborsClassifier(n_neighbors=15))
+])
+
+smote_knn15_ppl = Pipeline([
+    ('smote', SMOTE(sampling_strategy='auto')),
+    ('classification', KNeighborsClassifier(n_neighbors=15))
+])
+tomek_knn15_ppl = Pipeline([
+    ('tomek', TomekLinks()),
+    ('classification', KNeighborsClassifier(n_neighbors=15))
+])
 
 CLASSIFIERS = [
     KNeighborsClassifier(n_neighbors=3),
     KNeighborsClassifier(n_neighbors=15),
-    RandomClassifier(random_state=1000),
+    # RandomClassifier(random_state=1000),
     smote_tomek_knn3_ppl,
     tomek_smote_knn3_ppl,
     smote_knn3_ppl,
-    tomek_knn3_ppl
+    tomek_knn3_ppl,
+    smote_tomek_knn15_ppl,
+    tomek_smote_knn15_ppl,
+    smote_knn15_ppl,
+    tomek_knn15_ppl
 ]
 
 # print(pipeline)
@@ -112,29 +136,26 @@ def showScatters(dataset_idx):
     plt.title("Imbalanced dataset " + str(dataset_idx + 1), fontsize="12")
     plt.scatter(X[:, 0], X[:, -1], marker="o", c=y, s=40, edgecolor="k")
 
-    plt.figure(figsize=(7.50, 3.50))
-    plt.title("Oversampled by SMOTE " + str(dataset_idx + 1), fontsize="12")
-    plt.scatter(X_smote[:, 0], X_smote[:, -1], marker="o", c=y_smote, s=40, edgecolor="k")
-
-    plt.figure(figsize=(7.50, 3.50))
-    plt.title("Undersampled by Tomek-Links " + str(dataset_idx + 1), fontsize="12")
-    plt.scatter(X_tomek[:, 0], X_tomek[:, -1], marker="o", c=y_tomek, s=40, edgecolor="k")
+    # plt.figure(figsize=(7.50, 3.50))
+    # plt.title("Oversampled by SMOTE " + str(dataset_idx + 1), fontsize="12")
+    # plt.scatter(X_smote[:, 0], X_smote[:, -1], marker="o", c=y_smote, s=40, edgecolor="k")
+    #
+    # plt.figure(figsize=(7.50, 3.50))
+    # plt.title("Undersampled by Tomek-Links " + str(dataset_idx + 1), fontsize="12")
+    # plt.scatter(X_tomek[:, 0], X_tomek[:, -1], marker="o", c=y_tomek, s=40, edgecolor="k")
 
     plt.show()
 
 
 for dataset_idx, (X, y) in enumerate(DATASETS):
-# for dataset_idx, (X_tomek, y_tomek) in enumerate(DATASETS):
     for classifier_idx, clf_prot in enumerate(CLASSIFIERS):
-        # X_processed, y_processed = pipeline.fit_resample(X[train], y[train])
-
-        X_smote, y_smote = smote.fit_resample(X, y)
-        X_tomek, y_tomek = tomek_links.fit_resample(X_smote, y_smote)
-        for fold_idx, (train, test) in enumerate(rskf.split(X_tomek, y_tomek)):
+        # X_smote, y_smote = smote.fit_resample(X, y)
+        # X_tomek, y_tomek = tomek_links.fit_resample(X_smote, y_smote)
+        for fold_idx, (train, test) in enumerate(rskf.split(X, y)):
             clf = clone(clf_prot)
-            clf.fit(X_tomek[train], y_tomek[train])
-            y_tomek_pred = clf.predict(X_tomek[test])
-            score = accuracy_score(y_tomek[test], y_tomek_pred)
+            clf.fit(X[train], y[train])
+            y_tomek_pred = clf.predict(X[test])
+            score = accuracy_score(y[test], y_tomek_pred)
             scores[dataset_idx, classifier_idx, fold_idx] = score
 
 #         printDatasetsXy(dataset_idx)
