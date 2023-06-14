@@ -68,10 +68,12 @@ smote_knn3_ppl = Pipeline([
     ('smote', SMOTE(sampling_strategy='auto')),
     ('classification', KNeighborsClassifier(n_neighbors=3))
 ])
+
 tomek_knn3_ppl = Pipeline([
     ('tomek', TomekLinks()),
     ('classification', KNeighborsClassifier(n_neighbors=3))
 ])
+
 smote_tomek_knn15_ppl = Pipeline([
     ('smote', SMOTE(sampling_strategy='auto')),
     ('tomek', TomekLinks()),
@@ -88,6 +90,7 @@ smote_knn15_ppl = Pipeline([
     ('smote', SMOTE(sampling_strategy='auto')),
     ('classification', KNeighborsClassifier(n_neighbors=15))
 ])
+
 tomek_knn15_ppl = Pipeline([
     ('tomek', TomekLinks()),
     ('classification', KNeighborsClassifier(n_neighbors=15))
