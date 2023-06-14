@@ -94,8 +94,8 @@ for dataset_idx in range(len(datasets)):
                          "SM TL KNN 15", "TL SM KNN 15",
                          "SM KNN 15", "TL KNN 15",
                      ])
-    print('Results of statistic for', datasets[dataset_idx])
+    print('Results of statistic for', datasets[dataset_idx], ' dataset')
     print(table_statistic)
-    print('Results of p value for', datasets[dataset_idx])
+    print('Results of p value for', datasets[dataset_idx], ' dataset')
     print(table_pvalue)
 
