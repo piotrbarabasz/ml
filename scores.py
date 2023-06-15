@@ -18,13 +18,8 @@ table = tabulate(np.mean(scores, axis=-1),
                      "glass", "wisconsin", "ecoli-0_vs_1",
                      "vowel0", "yeast-0-5-6-7-9_vs_4", "yeast-2_vs_4"
                  ])
-# print(table)
+print(table)
 
-# index 1. datasets
-# index 2. classificators
-# print(scores[0, 0, :])
-# print(scores[1, 0, :])
-# print(scores.shape)
 result = []
 for dataset_idx in range(scores.shape[0]):
     dataset_result = []
@@ -45,17 +40,10 @@ result_array = np.array(result)
 # 2 idx - cls_base
 # 3 idx - clas_compared
 # 4 idx - ttest_result
-print(result_array[0, :, 0, 0])
-print(result_array[0, :, 1, 0])
-print(result_array.shape)
 
 # 0 statistic
 # 1 pvalue
-result_statistic = (result_array[:, :, :, 0])
-# result_pvalue = (result_array[:, :, :, 1] < 0.05).astype(int)
 
-# print(tabulate(result_statistic))
-# print(tabulate(result_pvalue))
 datasets = [
     "glass", "wisconsin", "ecoli-0_vs_1",
     "vowel0", "yeast-0-5-6-7-9_vs_4", "yeast-2_vs_4"

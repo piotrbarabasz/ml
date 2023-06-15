@@ -160,7 +160,7 @@ for dataset_idx, (X, y) in enumerate(DATASETS):
             y_tomek_pred = clf.predict(X[test])
             score = accuracy_score(y[test], y_tomek_pred)
             scores[dataset_idx, classifier_idx, fold_idx] = score
-
+        # print(classifier_idx)
 #         printDatasetsXy(dataset_idx)
 #     showScatters(dataset_idx)
 print(np.mean(scores, axis=-1), np.shape(scores))
