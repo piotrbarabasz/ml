@@ -8,15 +8,24 @@ scores = np.load("scores.npy")
 table = tabulate(np.mean(scores, axis=-1),
                  tablefmt="grid",
                  headers=[
-                     "KNN 3", "KNN 15",
-                     "SM TL KNN 3", "TL SM KNN 3",
-                     "SM KNN 3", "TL KNN 3",
-                     "SM TL KNN 15", "TL SM KNN 15",
-                     "SM KNN 15", "TL KNN 15",
+                     "KNN 3",
+                     "KNN 15",
+                     "SM TL KNN 3",
+                     "TL SM KNN 3",
+                     "SM KNN 3",
+                     "TL KNN 3",
+                     "SM TL KNN 15",
+                     "TL SM KNN 15",
+                     "SM KNN 15",
+                     "TL KNN 15",
                  ],
                  showindex=[
-                     "glass", "wisconsin", "ecoli-0_vs_1",
-                     "vowel0", "yeast-0-5-6-7-9_vs_4", "yeast-2_vs_4"
+                     "glass",
+                     "wisconsin",
+                     "ecoli-0_vs_1",
+                     "vowel0",
+                     "yeast-0-5-6-7-9_vs_4",
+                     "yeast-2_vs_4"
                  ])
 print(table)
 
@@ -41,47 +50,65 @@ result_array = np.array(result)
 # 3 idx - clas_compared
 # 4 idx - ttest_result
 
-# 0 statistic
-# 1 pvalue
-
 datasets = [
     "glass", "wisconsin", "ecoli-0_vs_1",
     "vowel0", "yeast-0-5-6-7-9_vs_4", "yeast-2_vs_4"
 ]
-print(len(datasets))
+# print(len(datasets))
 for dataset_idx in range(len(datasets)):
     table_pvalue = tabulate((result_array[dataset_idx, :, :, 1] < 0.05).astype(int),
                      tablefmt="grid",
                      headers=[
-                         "KNN 3", "KNN 15",
-                         "SM TL KNN 3", "TL SM KNN 3",
-                         "SM KNN 3", "TL KNN 3",
-                         "SM TL KNN 15", "TL SM KNN 15",
-                         "SM KNN 15", "TL KNN 15",
+                         "KNN 3",
+                         "KNN 15",
+                         "SM TL KNN 3",
+                         "TL SM KNN 3",
+                         "SM KNN 3",
+                         "TL KNN 3",
+                         "SM TL KNN 15",
+                         "TL SM KNN 15",
+                         "SM KNN 15",
+                         "TL KNN 15",
                      ],
                      showindex=[
-                         "KNN 3", "KNN 15",
-                         "SM TL KNN 3", "TL SM KNN 3",
-                         "SM KNN 3", "TL KNN 3",
-                         "SM TL KNN 15", "TL SM KNN 15",
-                         "SM KNN 15", "TL KNN 15",
+                         "KNN 3",
+                         "KNN 15",
+                         "SM TL KNN 3",
+                         "TL SM KNN 3",
+                         "SM KNN 3",
+                         "TL KNN 3",
+                         "SM TL KNN 15",
+                         "TL SM KNN 15",
+                         "SM KNN 15",
+                         "TL KNN 15",
                      ])
     table_statistic = tabulate((result_array[dataset_idx, :, :, 0]),
                      tablefmt="grid",
                      headers=[
-                         "KNN 3", "KNN 15",
-                         "SM TL KNN 3", "TL SM KNN 3",
-                         "SM KNN 3", "TL KNN 3",
-                         "SM TL KNN 15", "TL SM KNN 15",
-                         "SM KNN 15", "TL KNN 15",
+                         "KNN 3",
+                         "KNN 15",
+                         "SM TL KNN 3",
+                         "TL SM KNN 3",
+                         "SM KNN 3",
+                         "TL KNN 3",
+                         "SM TL KNN 15",
+                         "TL SM KNN 15",
+                         "SM KNN 15",
+                         "TL KNN 15",
                      ],
                      showindex=[
-                         "KNN 3", "KNN 15",
-                         "SM TL KNN 3", "TL SM KNN 3",
-                         "SM KNN 3", "TL KNN 3",
-                         "SM TL KNN 15", "TL SM KNN 15",
-                         "SM KNN 15", "TL KNN 15",
+                         "KNN 3",
+                         "KNN 15",
+                         "SM TL KNN 3",
+                         "TL SM KNN 3",
+                         "SM KNN 3",
+                         "TL KNN 3",
+                         "SM TL KNN 15",
+                         "TL SM KNN 15",
+                         "SM KNN 15",
+                         "TL KNN 15",
                      ])
+
     print('Results of statistic for', datasets[dataset_idx], ' dataset')
     print(table_statistic)
     print('Results of p value for', datasets[dataset_idx], ' dataset')

@@ -120,14 +120,51 @@ CLASSIFIERS = [
 
 scores = np.zeros(shape=(len(DATASETS), len(CLASSIFIERS), rskf.get_n_splits()))
 
+def printDatasetsXy(dataset_idx, DATASETS_NAMES):
+    print(DATASETS_NAMES[dataset_idx])
+    print("Original dataset:")
+    print(len(X), len(y))
+
+    print("Smote dataset:")
+    print(len(X_smote), len(X_smote))
+
+    print("Tomek-links dataset:")
+    print(len(X_tomek), len(X_tomek))
+
+
+def showScatters(dataset_idx, DATASETS_NAMES):
+    print(DATASETS_NAMES[dataset_idx])
+    plt.figure(figsize=(7.50, 3.50))
+    plt.title("Imbalanced dataset " + str(DATASETS_NAMES[dataset_idx]), fontsize="12")
+    plt.scatter(X[:, 0], X[:, -1], marker="o", c=y, s=40, edgecolor="k")
+    im_fig = 'figs/' + str(DATASETS_NAMES[dataset_idx]) + '_IM.png'
+    plt.savefig(im_fig)
+
+    plt.figure(figsize=(7.50, 3.50))
+    plt.title("Oversampled by SMOTE " + str(DATASETS_NAMES[dataset_idx]), fontsize="12")
+    plt.scatter(X_smote[:, 0], X_smote[:, -1], marker="o", c=y_smote, s=40, edgecolor="k")
+    sm_fig = 'figs/' + str(DATASETS_NAMES[dataset_idx]) + '_SM.png'
+    plt.savefig(sm_fig)
+
+    plt.figure(figsize=(7.50, 3.50))
+    plt.title("Undersampled by Tomek-Links " + str(DATASETS_NAMES[dataset_idx]), fontsize="12")
+    plt.scatter(X_tomek[:, 0], X_tomek[:, -1], marker="o", c=y_tomek, s=40, edgecolor="k")
+    tl_fig = 'figs/' + str(DATASETS_NAMES[dataset_idx]) + '_TL.png'
+    plt.savefig(tl_fig)
+
+
 for dataset_idx, (X, y) in enumerate(DATASETS):
     for classifier_idx, clf_prot in enumerate(CLASSIFIERS):
+        X_smote, y_smote = smote.fit_resample(X, y)
+        X_tomek, y_tomek = tomek_links.fit_resample(X_smote, y_smote)
         for fold_idx, (train, test) in enumerate(rskf.split(X, y)):
             clf = clone(clf_prot)
-            clf.fit(X[train], y[train])
-            y_pred = clf.predict(X[test])
-            score = accuracy_score(y[test], y_pred)
-            print(dataset_idx, classifier_idx, fold_idx)
+            clf.fit(X_tomek[train], y_tomek[train])
+            y_tomek_pred = clf.predict(X_tomek[test])
+            score = accuracy_score(y[test], y_tomek_pred)
             scores[dataset_idx, classifier_idx, fold_idx] = score
+    # printDatasetsXy(dataset_idx, DATASETS_NAMES)
+    showScatters(dataset_idx, DATASETS_NAMES)
 
-# np.save("scores", scores)
+exit()
+np.save("scores", scores)
